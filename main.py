@@ -13,7 +13,7 @@ LANGUAGE_MODEL = LanguageModel()
 
 @app.route('/')
 def hello():
-    return "Hello World!"
+    return "Welcome to the Language Model Service !!!"
 
 
 @app.route('/model/test')
