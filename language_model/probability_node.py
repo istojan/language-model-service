@@ -10,3 +10,6 @@ class ProbabilityNode:
 
     def calculate_probability(self, total_words_count):
         self.probability = self.word_count / total_words_count
+
+    def to_string(self):
+        return "Word={}, WordCount={}, Probability={}, ChildrenNodesWords={}".format(self.word, self.word_count, self.probability, [ [node.word, node.word_count] for node in self.sorted_probability_nodes])

@@ -1,11 +1,12 @@
 from language_model.language_model import LanguageModel
 from flask import Flask
-from flask import jsonify
+from flask import request
 import json
+from text_helpers.text_tokenizer import token_to_words
+from configuration import LANGUAGE_MODEL_FILE_PATH
+
 
 app = Flask(__name__)
-
-FILE_PATH = "language_model.pickle"
 
 LANGUAGE_MODEL = LanguageModel()
 
@@ -32,10 +33,35 @@ def get_top_n_words(num_words):
     return json_data
 
 
+@app.route('/model/query', methods=["GET"])
+def get_next_word_suggestion():
+
+    # print("NumWords={}, Message=\"Received request to return words with highest probability\"".format(num_words))
+
+    sentence = request.args["sentence"]
+
+    words = token_to_words(sentence)
+
+    print(sentence)
+    print(words)
+
+    result = LANGUAGE_MODEL.get_next_word(words, 1000)
+
+    json_data = json.dumps(result, ensure_ascii=False)
+
+    return json_data
+
+    # result = LANGUAGE_MODEL.get_top_n_words(int(num_words))
+    #
+    # json_data = json.dumps(result, ensure_ascii=False)
+    #
+    # return json_data
+
+
 if __name__ == '__main__':
 
     print("Message=\"Starting to load language model in memory\"")
-    LANGUAGE_MODEL.load_model_data(FILE_PATH)
+    LANGUAGE_MODEL.load_model_data(LANGUAGE_MODEL_FILE_PATH)
     print("Message=\"Finished loading language model in memory\"")
 
     app.run()

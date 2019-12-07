@@ -1,7 +1,7 @@
 from operator import attrgetter
 import pickle
 from language_model.probability_node import ProbabilityNode
-
+import json
 
 class LanguageModel:
 
@@ -20,6 +20,35 @@ class LanguageModel:
 
     def get_top_n_words(self, n):
         return [ [node.word, node.probability] for node in self.sorted_probability_nodes[:n]]
+
+    def get_next_word(self, words, n):
+        words_to_use = min(2, len(words))
+        words = words[-words_to_use:]
+        print("Extracted last k words are: {}".format(words))
+
+        result_list = list()
+
+        for i in range(0, words_to_use, 1):
+            if words[i] not in self.probability_nodes:
+                continue
+
+            current_node = self.probability_nodes[words[i]]
+
+            path_exists = True
+
+            for j in range(i+1, words_to_use, 1):
+                if words[j] not in current_node.children_nodes:
+                    path_exists = False
+                    break
+
+                current_node = current_node.children_nodes[words[j]]
+
+            if path_exists:
+                result_list.extend([[node.word, node.probability, i+1] for node in current_node.sorted_probability_nodes[:n]])
+                # break
+
+
+        return result_list
 
     def load_model_data(self, file_path):
         with open(file_path, "rb") as language_model:
