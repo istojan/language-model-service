@@ -47,8 +47,19 @@ class LanguageModel:
                 result_list.extend([[node.word, node.probability, i+1] for node in current_node.sorted_probability_nodes[:n]])
                 # break
 
-
         return result_list
+
+    def get_words_frequency(self, words_list):
+        result = dict()
+
+        for word in words_list:
+            count = 0
+            if word in self.probability_nodes:
+                count = self.probability_nodes[word].word_count
+
+            result[word] = count
+
+        return result
 
     def load_model_data(self, file_path):
         with open(file_path, "rb") as language_model:

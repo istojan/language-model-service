@@ -51,12 +51,17 @@ def get_next_word_suggestion():
 
     return json_data
 
-    # result = LANGUAGE_MODEL.get_top_n_words(int(num_words))
-    #
-    # json_data = json.dumps(result, ensure_ascii=False)
-    #
-    # return json_data
 
+@app.route('/model/words/frequency', methods=["GET"])
+def get_word_occurrences():
+
+    words_list = json.loads(request.args["words"])
+
+    result = LANGUAGE_MODEL.get_words_frequency(words_list)
+
+    json_data = json.dumps(result, ensure_ascii=False)
+
+    return json_data
 
 if __name__ == '__main__':
 
